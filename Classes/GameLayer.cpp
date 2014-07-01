@@ -9,8 +9,6 @@
 
 USING_NS_CC;
 
-static int raw_card_score = -1;
-
 
 // on "init" you need to initialize your instance
 GameLayer* GameLayer::createLayer(int width, int row_Num)
@@ -43,20 +41,40 @@ bool GameLayer::init(int width, int row_Num)
     
     //创建精灵数组
     float spriteGap = 10;
-    float spriteWidth = (width - (rowNum + 1) * spriteGap) / rowNum;
+    spriteWidth = (width - (rowNum + 1) * spriteGap) / rowNum;
+    
+    cardSpriteArray = (CardSprite ***)malloc(sizeof(CardSprite **) * rowNum);
     cardPosArray = (Point ***)malloc(sizeof(Point **) * rowNum);
     
+    //初始化背景及位置数组
     for (int i= 0; i < rowNum; i++)
     {
+        cardSpriteArray[i] = (CardSprite **)malloc(sizeof(CardSprite *) * rowNum);
         cardPosArray[i] = (Point **)malloc(sizeof(Point *) * rowNum);
+        
         for (int j = 0; j < rowNum; j++)
         {
-            //设置位置
+            //精灵数组
+            cardSpriteArray[i][j] = NULL;
+            
+            //精灵位置
             Point point = Point((spriteWidth + spriteGap) * j + spriteGap, (spriteWidth + spriteGap) * i + spriteGap);
+            
+            //位置数组
             Point *p = (Point *)malloc(sizeof(Point));
             memcpy(p, &point, sizeof(Point));
             cardPosArray[i][j] = p;
+            
+            //背景位置
+            LayerColor *spriteBg = LayerColor::create(Color4B(255, 255, 255, 255), spriteWidth, spriteWidth);
+            spriteBg->setPosition(point);
+            addChild(spriteBg);
         }
+    }
+    
+    //创建卡片
+    for (int i = 0; i < 18; i ++) {
+        createCardSprite();
     }
     
     //触摸事件
@@ -85,7 +103,7 @@ bool GameLayer::onTouchBegan(Touch *touch, Event *event)
 {
     //获取触摸起始点位置
     start = touch->getLocation();
-
+    
     //是否在layer内部
     if (!(start.x > this->getPositionX() && start.x < this->getPositionX() + this->getContentSize().width && start.y > this->getPositionY() && start.y < this->getPositionY() + this->getContentSize().height))
     {
@@ -183,4 +201,32 @@ void GameLayer::moveDirect(MOVE_T direction)
         
 }
 
-
+bool GameLayer::createCardSprite()
+{
+    int i = CCRANDOM_0_1() * rowNum;
+    int j = CCRANDOM_0_1() * rowNum;
+    
+    if (cardSpriteArray[i][j] == NULL)
+    {
+        int score = (CCRANDOM_0_1() * 10) < 6 ? 2 : 4;
+        CardSprite *card = CardSprite::create(spriteWidth, score);
+        card->setPosition(*cardPosArray[i][j]);
+        addChild(card);
+        cardSpriteArray[i][j] = card;
+        
+        return true;
+    }
+    else
+    {
+        //防止递归溢出
+        for (int i = 0; i < rowNum; i ++) {
+            for (int j = 0; j < rowNum; j++) {
+                if (cardSpriteArray[i][j] == NULL) {
+                    return createCardSprite();
+                }
+            }
+        }
+    }
+    
+    return false;
+}

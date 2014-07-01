@@ -9,7 +9,6 @@
 #define __Main_SCENE_H__
 
 #include "cocos2d.h"
-#include "HexColor.h"
 
 class MainScene : public cocos2d::Layer
 {

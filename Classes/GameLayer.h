@@ -32,12 +32,15 @@ public:
     int rowNum;
     
     //可动态调整数组大小 默认为4
+    CardSprite ***cardSpriteArray;
     Point ***cardPosArray;
+    
     
 private:
     //propety
     Point start, end;
-    int score;
+    int spriteWidth;
+    int totalPoints;
     
     //destruction
     ~GameLayer();
@@ -48,6 +51,9 @@ private:
     // touch method
     bool onTouchBegan(Touch* touch, Event* event);
 	void onTouchEnded(Touch* touch, Event* event);
+    
+    //创建精灵
+    bool createCardSprite();
 };
 
 
