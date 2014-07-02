@@ -53,7 +53,7 @@ private:
 	void onTouchEnded(Touch* touch, Event* event);
     
     //创建精灵
-    bool createCardSprite();
+    void createCardSprite();
 };
 
 

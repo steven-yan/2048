@@ -201,6 +201,7 @@ void GameLayer::moveDirect(MOVE_T direction)
         
 }
 
+/*
 bool GameLayer::createCardSprite()
 {
     int i = CCRANDOM_0_1() * rowNum;
@@ -208,7 +209,7 @@ bool GameLayer::createCardSprite()
     
     if (cardSpriteArray[i][j] == NULL)
     {
-        int score = (CCRANDOM_0_1() * 10) < 6 ? 2 : 4;
+        int score = (rand() % 7) < 6 ? 2 : 4;
         CardSprite *card = CardSprite::create(spriteWidth, score);
         card->setPosition(*cardPosArray[i][j]);
         addChild(card);
@@ -226,7 +227,46 @@ bool GameLayer::createCardSprite()
                 }
             }
         }
+    
+        return false;
+    }
+}*/
+
+
+void GameLayer::createCardSprite()
+{
+    bool full_flag = true;
+    
+    //检测装满
+    for (int i = 0; i < rowNum; i ++) {
+        for (int j = 0; j < rowNum; j++) {
+            if (cardSpriteArray[i][j] == NULL) {
+                full_flag = false;
+            }
+        }
     }
     
-    return false;
+    if (full_flag) {
+        return;
+    }
+    
+    int i = CCRANDOM_0_1() * rowNum;
+    int j = CCRANDOM_0_1() * rowNum;
+    
+    if (cardSpriteArray[i][j] == NULL)
+    {
+        float s = (CCRANDOM_0_1() * 10.0);
+        int score =  s < 9 ? 2 : 4;
+        CardSprite *card = CardSprite::create(spriteWidth, score);
+        card->setPosition(*cardPosArray[i][j]);
+        addChild(card);
+        cardSpriteArray[i][j] = card;
+    }
+    else
+    {
+        createCardSprite();
+    }
+    
+    return;
 }
+
