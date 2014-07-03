@@ -74,9 +74,17 @@ bool GameLayer::init(int width, int row_Num)
         }
     }
     
-    //创建卡片
-    for (int i = 0; i < 2; i ++) {
+    //创建原始卡片
+    for (int i = 0; i < 10; i ++) {
         createCardSprite();
+//        int s = 4;
+//        if (i == 1 || i == 2 ) {
+//            s = 2;
+//        }
+//        CardSprite *card = CardSprite::create(spriteWidth, s);
+//        card->setPosition(*cardPosArray[1][i]);
+//        addChild(card);
+//        cardSpriteArray[1][i] = card;
     }
     
     //触摸事件
@@ -157,46 +165,37 @@ void GameLayer::onTouchEnded(Touch *touch, Event *event)
     //移动精灵
     moveDirect(direction);
     //创建精灵
+
     //检测结束
-    
 }
 
 //移动精灵
 void GameLayer::moveDirect(MOVE_T direction)
 {
     if (direction == MOVE_RIGHT) {
-        for (int i = 0; i < rowNum; i ++) {
-            for (int j = rowNum - 1; j > 0; j--) {
-//                if (cardSpriteArray[i][j-1] && cardSpriteArray[i][j] && (cardSpriteArray[i][j-1]->getCardScore() == cardSpriteArray[i][j-1]->getCardScore())) { //相同card相加
-//                    cardSpriteArray[i][j]->setCardScore(cardSpriteArray[i][j]->getCardScore() * 2);
-//                    free(cardSpriteArray[i][j-1]);
-//                    cardSpriteArray[i][j-1] = NULL;
-//                    j++;
-//                } else {
-//                    
-//                }
-                if (cardSpriteArray[i][j] == NULL) {
-                    if (cardSpriteArray[i][j - 1] == NULL) {
-                        j--;
-                        continue;
-                    } else {
-                        cardSpriteArray[i][j - 1]->runAction(MoveTo::create(0.1, *cardPosArray[i][j]));
-                    }
-                } else {
-                    if (cardSpriteArray[i][j - 1] && cardSpriteArray[i][j]->getCardScore() == cardSpriteArray[i][j - 1]->getCardScore()) {
-                        
-                        cardSpriteArray[i][j]->setCardScore(cardSpriteArray[i][j]->getCardScore() * 2);
-                        removeChild(cardSpriteArray[i][j - 1]);
-                        free(cardSpriteArray[i][j - 1]);
-                        cardSpriteArray[i][j - 1] = NULL;
+        for (int i = 0; i < rowNum; i++) {
+            for (int j = rowNum - 1; j >= 0; j --) {
+                for (int k = j - 1; k >= 0; k --) {
+                    if (cardSpriteArray[i][k]) {
+                        if (!cardSpriteArray[i][j]) {
+                            cardSpriteArray[i][k]->runAction(MoveTo::create(0.1, *cardPosArray[i][j]));
+                            cardSpriteArray[i][j] = cardSpriteArray[i][k];
+                            cardSpriteArray[i][k] = NULL;
+                        } else if (cardSpriteArray[i][k]->getCardScore() == cardSpriteArray[i][j]->getCardScore()) {
+                            cardSpriteArray[i][k]->runAction(MoveTo::create(0.1, *cardPosArray[i][j]));
+                            removeChild(cardSpriteArray[i][k]);
+                            cardSpriteArray[i][k] = NULL;
+                            cardSpriteArray[i][j]->setCardScore(cardSpriteArray[i][j]->getCardScore() * 2);
+                            j--;
+                        } else {
+                            break;
+                        }
                     }
                 }
             }
         }
     }
 }
-
-int fakeRandomNum();
 
 bool GameLayer::createCardSprite()
 {
