@@ -9,6 +9,8 @@
 
 USING_NS_CC;
 
+#define S_TO_US (1000000)
+
 
 // on "init" you need to initialize your instance
 GameLayer* GameLayer::createLayer(int width, int row_Num)
@@ -73,7 +75,7 @@ bool GameLayer::init(int width, int row_Num)
     }
     
     //创建卡片
-    for (int i = 0; i < 18; i ++) {
+    for (int i = 0; i < 2; i ++) {
         createCardSprite();
     }
     
@@ -152,64 +154,58 @@ void GameLayer::onTouchEnded(Touch *touch, Event *event)
         }
     }
     
-    //创建精灵
-    
-    //检测结束
-    
     //移动精灵
     moveDirect(direction);
+    //创建精灵
+    //检测结束
+    
 }
 
 //移动精灵
 void GameLayer::moveDirect(MOVE_T direction)
 {
-    if (direction == MOVE_RIGHT || direction == MOVE_LEFT)
-    {
-        for (int i = 0; i < rowNum; i++)
-        {
-            if (direction == MOVE_RIGHT)
-            {
-//                //移动方向
-//                for (int j = rowNum - 2; j >= 0; j--)
-//                {
-//                    for (int k = rowNum - 1; k >= 0; k--)
-//                    {
-//                        if (cardArray[i][k]->getCardScore() == raw_card_score) {    //移动卡片位置
-//                            cardArray[i][k]->setCardScore(cardArray[i][j]->getCardScore());
-//                            cardArray[i][j]->setCardScore(raw_card_score);
-//                        }
-//                    }
+    if (direction == MOVE_RIGHT) {
+        for (int i = 0; i < rowNum; i ++) {
+            for (int j = rowNum - 1; j > 0; j--) {
+//                if (cardSpriteArray[i][j-1] && cardSpriteArray[i][j] && (cardSpriteArray[i][j-1]->getCardScore() == cardSpriteArray[i][j-1]->getCardScore())) { //相同card相加
+//                    cardSpriteArray[i][j]->setCardScore(cardSpriteArray[i][j]->getCardScore() * 2);
+//                    free(cardSpriteArray[i][j-1]);
+//                    cardSpriteArray[i][j-1] = NULL;
+//                    j++;
+//                } else {
+//                    
 //                }
-//                
-//                for (int j = rowNum - 1; j > 0; j--)
-//                {
-//                    if (cardArray[i][j] == cardArray[i][j - 1])     //合并相同项
-//                    {
-//                        
-//                    }
-//                }
-            }
-            else
-            {
+                if (cardSpriteArray[i][j] == NULL) {
+                    if (cardSpriteArray[i][j - 1] == NULL) {
+                        j--;
+                        continue;
+                    } else {
+                        cardSpriteArray[i][j - 1]->runAction(MoveTo::create(0.1, *cardPosArray[i][j]));
+                    }
+                } else {
+                    if (cardSpriteArray[i][j - 1] && cardSpriteArray[i][j]->getCardScore() == cardSpriteArray[i][j - 1]->getCardScore()) {
+                        
+                        cardSpriteArray[i][j]->setCardScore(cardSpriteArray[i][j]->getCardScore() * 2);
+                        removeChild(cardSpriteArray[i][j - 1]);
+                        free(cardSpriteArray[i][j - 1]);
+                        cardSpriteArray[i][j - 1] = NULL;
+                    }
+                }
             }
         }
     }
-    else
-    {
-        
-    }
-        
 }
 
-/*
+int fakeRandomNum();
+
 bool GameLayer::createCardSprite()
 {
-    int i = CCRANDOM_0_1() * rowNum;
-    int j = CCRANDOM_0_1() * rowNum;
-    
+    int i = fakeRandomNum() % rowNum;
+    int j = fakeRandomNum() % rowNum;
+
     if (cardSpriteArray[i][j] == NULL)
     {
-        int score = (rand() % 7) < 6 ? 2 : 4;
+        int score = (fakeRandomNum() % 7) < 6 ? 2 : 4;
         CardSprite *card = CardSprite::create(spriteWidth, score);
         card->setPosition(*cardPosArray[i][j]);
         addChild(card);
@@ -230,43 +226,18 @@ bool GameLayer::createCardSprite()
     
         return false;
     }
-}*/
-
-
-void GameLayer::createCardSprite()
-{
-    bool full_flag = true;
-    
-    //检测装满
-    for (int i = 0; i < rowNum; i ++) {
-        for (int j = 0; j < rowNum; j++) {
-            if (cardSpriteArray[i][j] == NULL) {
-                full_flag = false;
-            }
-        }
-    }
-    
-    if (full_flag) {
-        return;
-    }
-    
-    int i = CCRANDOM_0_1() * rowNum;
-    int j = CCRANDOM_0_1() * rowNum;
-    
-    if (cardSpriteArray[i][j] == NULL)
-    {
-        float s = (CCRANDOM_0_1() * 10.0);
-        int score =  s < 9 ? 2 : 4;
-        CardSprite *card = CardSprite::create(spriteWidth, score);
-        card->setPosition(*cardPosArray[i][j]);
-        addChild(card);
-        cardSpriteArray[i][j] = card;
-    }
-    else
-    {
-        createCardSprite();
-    }
-    
-    return;
 }
+
+// 获取random
+int fakeRandomNum() {
+    static unsigned int i = 0;
+    struct timeval tv;
+    gettimeofday(&tv, NULL);
+
+    srand(i * (i + 7) + tv.tv_usec * i);
+    i++;
+    
+    return rand();
+}
+
 

@@ -53,9 +53,10 @@ private:
 	void onTouchEnded(Touch* touch, Event* event);
     
     //创建精灵
-    void createCardSprite();
+    bool createCardSprite();
 };
 
+//int getRandomNum();
 
 
 #endif
