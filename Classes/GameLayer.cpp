@@ -9,9 +9,6 @@
 
 USING_NS_CC;
 
-#define S_TO_US (1000000)
-
-
 // on "init" you need to initialize your instance
 GameLayer* GameLayer::createLayer(int width, int row_Num)
 {
@@ -75,7 +72,7 @@ bool GameLayer::init(int width, int row_Num)
     }
     
     //创建原始卡片
-    for (int i = 0; i < 10; i ++) {
+    for (int i = 0; i < 66; i ++) {
         createCardSprite();
 //        int s = 4;
 //        if (i == 1 || i == 2 ) {
@@ -172,23 +169,131 @@ void GameLayer::onTouchEnded(Touch *touch, Event *event)
 //移动精灵
 void GameLayer::moveDirect(MOVE_T direction)
 {
-    if (direction == MOVE_RIGHT) {
-        for (int i = 0; i < rowNum; i++) {
-            for (int j = rowNum - 1; j >= 0; j --) {
-                for (int k = j - 1; k >= 0; k --) {
-                    if (cardSpriteArray[i][k]) {
-                        if (!cardSpriteArray[i][j]) {
-                            cardSpriteArray[i][k]->runAction(MoveTo::create(0.1, *cardPosArray[i][j]));
-                            cardSpriteArray[i][j] = cardSpriteArray[i][k];
-                            cardSpriteArray[i][k] = NULL;
-                        } else if (cardSpriteArray[i][k]->getCardScore() == cardSpriteArray[i][j]->getCardScore()) {
-                            cardSpriteArray[i][k]->runAction(MoveTo::create(0.1, *cardPosArray[i][j]));
-                            removeChild(cardSpriteArray[i][k]);
-                            cardSpriteArray[i][k] = NULL;
-                            cardSpriteArray[i][j]->setCardScore(cardSpriteArray[i][j]->getCardScore() * 2);
-                            j--;
-                        } else {
-                            break;
+    if (direction == MOVE_RIGHT || direction == MOVE_LEFT) {
+        for (int i = 0; i < rowNum; i++)
+        {
+            if (direction == MOVE_RIGHT)
+            {
+                for (int j = rowNum - 1; j >= 0; j --)
+                {
+                    for (int k = j - 1; k >= 0; k --)
+                    {
+                        if (cardSpriteArray[i][k])
+                        {
+                            if (!cardSpriteArray[i][j])
+                            {
+                                cardSpriteArray[i][k]->runAction(MoveTo::create(0.1, *cardPosArray[i][j]));
+                                cardSpriteArray[i][j] = cardSpriteArray[i][k];
+                                cardSpriteArray[i][k] = NULL;
+                            }
+                            else if (cardSpriteArray[i][k]->getCardScore() == cardSpriteArray[i][j]->getCardScore())
+                            {
+                                cardSpriteArray[i][k]->runAction(MoveTo::create(0.1, *cardPosArray[i][j]));
+                                removeChild(cardSpriteArray[i][k]);
+                                cardSpriteArray[i][k] = NULL;
+                                cardSpriteArray[i][j]->setCardScore(cardSpriteArray[i][j]->getCardScore() * 2);
+                                j--;
+                            }
+                            else
+                            {
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                for (int j = 0; j < rowNum; j ++)
+                {
+                    for (int k = j + 1; k < rowNum; k ++)
+                    {
+                        if (cardSpriteArray[i][k])
+                        {
+                            if (!cardSpriteArray[i][j])
+                            {
+                                cardSpriteArray[i][k]->runAction(MoveTo::create(0.1, *cardPosArray[i][j]));
+                                cardSpriteArray[i][j] = cardSpriteArray[i][k];
+                                cardSpriteArray[i][k] = NULL;
+                            }
+                            else if (cardSpriteArray[i][k]->getCardScore() == cardSpriteArray[i][j]->getCardScore())
+                            {
+                                cardSpriteArray[i][k]->runAction(MoveTo::create(0.1, *cardPosArray[i][j]));
+                                removeChild(cardSpriteArray[i][k]);
+                                cardSpriteArray[i][k] = NULL;
+                                cardSpriteArray[i][j]->setCardScore(cardSpriteArray[i][j]->getCardScore() * 2);
+                                j++;
+                            }
+                            else
+                            {
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    else
+    {
+        for (int i = 0; i < rowNum; i++)
+        {
+            if (direction == MOVE_UP)
+            {
+                for (int j = rowNum - 1; j >= 0; j --)
+                {
+                    for (int k = j - 1; k >= 0; k --)
+                    {
+                        if (cardSpriteArray[k][i])
+                        {
+                            if (!cardSpriteArray[j][i])
+                            {
+                                cardSpriteArray[k][i]->runAction(MoveTo::create(0.1, *cardPosArray[j][i]));
+                                cardSpriteArray[j][i] = cardSpriteArray[k][i];
+                                cardSpriteArray[k][i] = NULL;
+                            }
+                            else if (cardSpriteArray[k][i]->getCardScore() == cardSpriteArray[j][i]->getCardScore())
+                            {
+                                cardSpriteArray[k][i]->runAction(MoveTo::create(0.1, *cardPosArray[j][i]));
+                                removeChild(cardSpriteArray[k][i]);
+                                cardSpriteArray[k][i] = NULL;
+                                cardSpriteArray[j][i]->setCardScore(cardSpriteArray[j][i]->getCardScore() * 2);
+                                j--;
+                            }
+                            else
+                            {
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                for (int j = 0; j < rowNum; j ++)
+                {
+                    for (int k = j + 1; k < rowNum; k ++)
+                    {
+                        if (cardSpriteArray[k][i])
+                        {
+                            if (!cardSpriteArray[j][i])
+                            {
+                                cardSpriteArray[k][i]->runAction(MoveTo::create(0.1, *cardPosArray[j][i]));
+                                cardSpriteArray[j][i] = cardSpriteArray[k][i];
+                                cardSpriteArray[k][i] = NULL;
+                            }
+                            else if (cardSpriteArray[k][i]->getCardScore() == cardSpriteArray[j][i]->getCardScore())
+                            {
+                                cardSpriteArray[k][i]->runAction(MoveTo::create(0.1, *cardPosArray[i][j]));
+                                removeChild(cardSpriteArray[k][i]);
+                                cardSpriteArray[k][i] = NULL;
+                                cardSpriteArray[j][i]->setCardScore(cardSpriteArray[j][i]->getCardScore() * 2);
+                                j++;
+                            }
+                            else
+                            {
+                                break;
+                            }
                         }
                     }
                 }
