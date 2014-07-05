@@ -45,6 +45,10 @@ private:
     
     //移动元素
     void moveDirect(MOVE_T direction);
+    bool moveRight();
+    bool moveLeft();
+    bool moveUp();
+    bool moveDown();
     
     // touch method
     bool onTouchBegan(Touch* touch, Event* event);
@@ -52,6 +56,8 @@ private:
     
     //创建精灵
     bool createCardSprite();
+    //检测游戏结束
+    bool checkGameFinished();
 };
 
 int getFakeRandomNum();

@@ -19,9 +19,10 @@ public:
 	virtual bool init(float width, int score);
     ~CardSprite();
     
-    //cardNum
+    //cardScore
     int getCardScore();
     void setCardScore(int score);
+    void doubleCardScore();
     
 private:
     

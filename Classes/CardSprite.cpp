@@ -53,12 +53,16 @@ bool CardSprite::init(float width, int score)
 
 CardSprite:: ~CardSprite()
 {
-
 }
 
 int CardSprite:: getCardScore()
 {
     return cardScore;
+}
+
+void CardSprite::doubleCardScore()
+{
+    setCardScore(cardScore * 2);
 }
 
 void CardSprite:: setCardScore(int score)
