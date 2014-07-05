@@ -54,7 +54,7 @@ private:
     bool createCardSprite();
 };
 
-int fakeRandomNum();
+int getFakeRandomNum();
 
 
 

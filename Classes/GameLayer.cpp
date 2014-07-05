@@ -72,16 +72,8 @@ bool GameLayer::init(int width, int row_Num)
     }
     
     //创建原始卡片
-    for (int i = 0; i < 66; i ++) {
+    for (int i = 0; i < 2; i ++) {
         createCardSprite();
-//        int s = 4;
-//        if (i == 1 || i == 2 ) {
-//            s = 2;
-//        }
-//        CardSprite *card = CardSprite::create(spriteWidth, s);
-//        card->setPosition(*cardPosArray[1][i]);
-//        addChild(card);
-//        cardSpriteArray[1][i] = card;
     }
     
     //触摸事件
@@ -162,7 +154,7 @@ void GameLayer::onTouchEnded(Touch *touch, Event *event)
     //移动精灵
     moveDirect(direction);
     //创建精灵
-
+    createCardSprite();
     //检测结束
 }
 
@@ -304,12 +296,12 @@ void GameLayer::moveDirect(MOVE_T direction)
 
 bool GameLayer::createCardSprite()
 {
-    int i = fakeRandomNum() % rowNum;
-    int j = fakeRandomNum() % rowNum;
+    int i = getFakeRandomNum() % rowNum;
+    int j = getFakeRandomNum() % rowNum;
 
     if (cardSpriteArray[i][j] == NULL)
     {
-        int score = (fakeRandomNum() % 7) < 6 ? 2 : 4;
+        int score = (getFakeRandomNum() % 7) < 6 ? 2 : 4;
         CardSprite *card = CardSprite::create(spriteWidth, score);
         card->setPosition(*cardPosArray[i][j]);
         addChild(card);
@@ -333,7 +325,8 @@ bool GameLayer::createCardSprite()
 }
 
 // 获取random
-int fakeRandomNum() {
+int getFakeRandomNum()
+{
     static unsigned int i = 0;
     struct timeval tv;
     gettimeofday(&tv, NULL);
