@@ -23,7 +23,6 @@ typedef enum
     MOVE_LEFT
 } MOVE_T;
 
-
 class GameLayer : public LayerColor
 {
 public:
@@ -35,7 +34,6 @@ public:
     CardSprite ***cardSpriteArray;
     Point ***cardPosArray;
     
-    
 private:
     //propety
     Point start, end;
@@ -45,7 +43,7 @@ private:
     //destruction
     ~GameLayer();
     
-    //合并元素
+    //移动元素
     void moveDirect(MOVE_T direction);
     
     // touch method
@@ -56,7 +54,8 @@ private:
     bool createCardSprite();
 };
 
-//int getRandomNum();
+int getFakeRandomNum();
+
 
 
 #endif
